@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UtilityHub ✨ — All-in-One Tools</title>
+  <meta name="description" content="UtilityHub — text tools, QR generator, URL shortener, image resizer. Built with Tailwind CSS." />
+  <link rel="icon" type="image/png" href="icon.png" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { primary: '#06b6d4', surface: '#0f172a' } } } };
+  </script>
+
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(6px); }
+    /* fallback styles if runtime class injection doesn't run */
+    .tool-btn { padding: .5rem .75rem; border-radius: .5rem; background: #0f172a; color: #e6eef3; font-weight: 600; }
+    .btn-primary { padding: .5rem .9rem; border-radius: .5rem; background: #06b6d4; color: #062024; font-weight: 700; }
+    .btn-ghost { padding: .45rem .75rem; border-radius: .5rem; background: #0f172a; color: #e6eef3; }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+  <div class="container mx-auto p-6">
+    <header class="flex items-center justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-extrabold tracking-tight flex items-center gap-3">🔧 UtilityHub <span class="text-cyan-300 text-sm font-medium">All-in-One Tools</span></h1>
+        <p id="subline" class="text-slate-400 mt-1">Fast, privacy-friendly tools for everyday use. ⚡️</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="themeBtn" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm">🌙 Dark / Light</button>
+        <button id="installAppBtn" style="display:none" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-sm font-semibold">📦 Install App</button>
+      </div>
+    </header>
+
+    <main class="grid lg:grid-cols-3 gap-6">
+      <!-- Left column: Text Tools -->
+      <section class="lg:col-span-2 space-y-6">
+        <div class="panel glass rounded-2xl p-6 shadow-lg border border-slate-700">
+          <div class="flex items-start justify-between">
+            <div>
+              <h2 class="text-xl font-semibold">✍️ Text Tools</h2>
+              <p class="text-slate-400 text-sm mt-1">Word & character counter, case converter, remove extra spaces, reverse text, and copy.</p>
+            </div>
+            <div class="text-slate-400 text-sm">Fast • Reliable</div>
+          </div>
+
+          <textarea id="textInput" rows="8" class="w-full mt-4 p-4 rounded-xl bg-slate-900 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="Paste or type text here..."></textarea>
+
+          <div class="flex items-center justify-between mt-4 flex-wrap gap-3">
+            <div class="text-slate-400 text-sm">Words: <span id="wordCount" class="font-medium">0</span> • Chars: <span id="charCount" class="font-medium">0</span></div>
+
+            <div class="flex flex-wrap gap-3">
+              <button id="btnUpper" class="tool-btn">UPPER 🔼</button>
+              <button id="btnLower" class="tool-btn">lower 🔽</button>
+              <button id="btnTitle" class="tool-btn">Title Case ✨</button>
+              <button id="btnSpaces" class="tool-btn">Remove Spaces ↔️</button>
+              <button id="btnReverse" class="tool-btn">Reverse 🔁</button>
+              <button id="btnCopy" class="tool-btn">Copy 📋</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Resizer -->
+        <div class="panel glass rounded-2xl p-6 shadow-lg border border-slate-700">
+          <div class="flex items-start justify-between">
+            <div>
+              <h2 class="text-xl font-semibold">🖼️ Image Resizer</h2>
+              <p class="text-slate-400 text-sm mt-1">Resize and compress images and download as JPEG.</p>
+            </div>
+            <div class="text-slate-400 text-sm">Privacy-focused</div>
+          </div>
+
+          <div class="mt-4 grid sm:grid-cols-2 gap-3">
+            <div>
+              <input id="imageFile" type="file" accept="image/*" class="block w-full text-sm text-slate-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-slate-700 file:hover:bg-slate-600" />
+            </div>
+            <div class="flex gap-2">
+              <input id="imgWidth" type="number" placeholder="Width (px)" class="p-3 rounded-xl bg-slate-900 border border-slate-700 w-1/2" />
+              <input id="imgHeight" type="number" placeholder="Height (px)" class="p-3 rounded-xl bg-slate-900 border border-slate-700 w-1/2" />
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="text-slate-400 text-sm">Target size (KB) — optional</label>
+            <div class="mt-2 flex gap-2">
+              <input id="targetKb" type="number" placeholder="e.g. 200" class="p-3 rounded-xl bg-slate-900 border border-slate-700 w-full" />
+            </div>
+            <p class="text-slate-400 text-xs mt-2">If set, the tool will try to reach the requested size (best-effort). Works for JPEG output.</p>
+          </div>
+
+          <div class="mt-4 flex gap-3">
+            <button id="resizeBtn" class="btn-primary">Resize & Download ⬇️</button>
+            <button id="previewBtn" class="btn-ghost">Preview 👀</button>
+            <button id="clearImgBtn" class="btn-ghost">Clear ✖️</button>
+          </div>
+
+          <div id="imgPreviewWrap" class="mt-4"></div>
+        </div>
+
+        <div class="panel glass rounded-2xl p-6 shadow-lg border border-slate-700">
+          <h3 class="text-lg font-semibold">✨ Extras & Future Add-ons</h3>
+          <ul class="mt-3 text-slate-400 space-y-2 list-disc ml-5">
+            <li>PDF tools (merge/split) via client-side libraries</li>
+            <li>Base64 encoder/decoder</li>
+            <li>PWA install & caching support (optional)</li>
+            <li>Optional backend for global short links</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Right column: QR & URL Shortener -->
+      <aside class="space-y-6">
+        <div class="panel glass rounded-2xl p-6 shadow-lg border border-slate-700">
+          <div class="flex items-start justify-between">
+            <div>
+              <h2 class="text-xl font-semibold">🔗 URL Shortener + QR</h2>
+              <p class="text-slate-400 text-sm mt-1">Shorten links (TinyURL attempted) and generate QR codes.</p>
+            </div>
+            <div class="text-slate-400 text-sm">Share easily</div>
+          </div>
+
+          <input id="urlInput" type="text" placeholder="https://example.com" class="mt-4 p-3 rounded-xl bg-slate-900 border border-slate-700 w-full" />
+
+          <div class="mt-4 flex gap-3">
+            <button id="qrBtn" class="btn-primary flex-1">Generate QR 🔳</button>
+            <button id="shortenBtn" class="btn-primary flex-1">Shorten URL ✂️</button>
+          </div>
+
+          <div class="mt-4 flex items-start gap-4">
+            <div id="qrcode" class="bg-slate-800 p-3 rounded-lg"></div>
+            <div class="flex-1">
+              <div class="text-slate-400 text-sm">Short URL (TinyURL or local fallback):</div>
+              <input id="shortResult" type="text" readonly class="mt-2 p-3 rounded-xl bg-slate-900 border border-slate-700 w-full" />
+              <div class="mt-3 flex gap-2">
+                <button id="copyShortBtn" class="btn-ghost">Copy 📋</button>
+                <button id="openShortBtn" class="btn-ghost">Open 🔗</button>
+                <button id="clearShortBtn" class="btn-ghost">Clear ✖️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel glass rounded-2xl p-6 shadow-lg border border-slate-700">
+          <h3 class="text-lg font-semibold">ℹ️ About</h3>
+          <p class="text-slate-400 text-sm mt-2">This project is created and maintained by <strong>Manash Mishra</strong> — developer focusing on practical web tools and polished UIs.</p>
+
+          <div class="mt-4 text-slate-300 text-sm space-y-1">
+            <p>🌐 Portfolio: <a href="https://dj-mm.github.io/portfolio/" class="text-cyan-400" target="_blank" rel="noopener">dj-mm.github.io/portfolio</a></p>
+            <p>💼 LinkedIn: <a href="https://www.linkedin.com/in/manash-mishra-918542221/" class="text-cyan-400" target="_blank" rel="noopener">linkedin.com/in/manash-mishra</a></p>
+            <p>🐙 GitHub: <a href="https://github.com/dj-mm" class="text-cyan-400" target="_blank" rel="noopener">github.com/dj-mm</a></p>
+            <p>📸 Instagram: <a href="https://www.instagram.com/manash.djmm/" class="text-cyan-400" target="_blank" rel="noopener">@manash.djmm</a></p>
+          </div>
+
+          <p class="mt-4 text-slate-400 text-sm">Reach out for collaborations or customizations.</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="mt-10 text-center text-slate-400">
+    <p> <a href="https://linktr.ee/manash.djmm" target="_blank" rel="noopener noreferrer" class="text-cyan-400 ">Created with ❤️ by Manash </a></p>
+    </footer>
+  </div>
+
+  <!-- runtime class injection for buttons -->
+  <script>
+    document.querySelectorAll('.tool-btn').forEach(btn => { btn.classList.add('px-3','py-2','rounded-lg','bg-slate-700','hover:bg-slate-600','text-sm','font-medium'); });
+    document.querySelectorAll('.btn-primary').forEach(btn => { btn.classList.add('px-4','py-2','rounded-lg','bg-cyan-500','hover:bg-cyan-400','font-semibold','text-slate-900'); });
+    document.querySelectorAll('.btn-ghost').forEach(btn => { btn.classList.add('px-3','py-2','rounded-lg','bg-slate-700','hover:bg-slate-600','text-sm'); });
+  </script>
+
+  <script>
+    // PWA install prompt handler
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installAppBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+    });
+    installBtn.addEventListener('click', async () => {
+      if(!deferredPrompt) return alert('Install not available right now.');
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+
+    // Theme toggle
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.addEventListener('click', () => {
+      const body = document.body;
+      if(body.classList.contains('light-mode')){
+        body.classList.remove('light-mode');
+        body.style.background = '';
+        body.style.color = '';
+        document.getElementById('subline').classList.remove('text-slate-900');
+      } else {
+        body.classList.add('light-mode');
+        body.style.background = 'linear-gradient(180deg,#f8fafc,#eef2ff)';
+        body.style.color = '#0f172a';
+        document.getElementById('subline').classList.add('text-slate-900');
+      }
+    });
+
+    /* Text tools */
+    const textInput = document.getElementById('textInput');
+    const wordCount = document.getElementById('wordCount');
+    const charCount = document.getElementById('charCount');
+
+    function updateCounts(){
+      const txt = textInput.value.trim();
+      const words = txt ? txt.split(/\s+/).filter(Boolean).length : 0;
+      wordCount.textContent = words;
+      charCount.textContent = textInput.value.length;
+    }
+    textInput.addEventListener('input', updateCounts);
+    updateCounts();
+
+    document.getElementById('btnUpper').addEventListener('click', () => { textInput.value = textInput.value.toUpperCase(); updateCounts(); });
+    document.getElementById('btnLower').addEventListener('click', () => { textInput.value = textInput.value.toLowerCase(); updateCounts(); });
+    document.getElementById('btnTitle').addEventListener('click', () => { textInput.value = textInput.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); updateCounts(); });
+    document.getElementById('btnSpaces').addEventListener('click', () => { textInput.value = textInput.value.replace(/\s+/g,' ').trim(); updateCounts(); });
+    document.getElementById('btnReverse').addEventListener('click', () => { textInput.value = textInput.value.split('').reverse().join(''); updateCounts(); });
+    document.getElementById('btnCopy').addEventListener('click', () => navigator.clipboard.writeText(textInput.value).then(()=> alert('Copied to clipboard ✅')) );
+
+    /* QR generation */
+    document.getElementById('qrBtn').addEventListener('click', () => {
+      const url = document.getElementById('urlInput').value.trim();
+      if(!url) return alert('Please enter a URL');
+      const container = document.getElementById('qrcode');
+      container.innerHTML = '';
+      new QRCode(container, { text: url, width: 140, height: 140 });
+    });
+
+    /* URL shortener */
+    const shortResult = document.getElementById('shortResult');
+    document.getElementById('shortenBtn').addEventListener('click', async () => {
+      const orig = document.getElementById('urlInput').value.trim();
+      if(!orig) return alert('Enter a URL to shorten');
+
+      try {
+        const resp = await fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(orig));
+        if(resp.ok){
+          const short = await resp.text();
+          shortResult.value = short;
+          return;
+        }
+      } catch(e){
+        console.warn('TinyURL error or CORS:', e);
+      }
+
+      // Local fallback
+      const storeKey = 'utilityhub_local_links_prod';
+      const store = JSON.parse(localStorage.getItem(storeKey) || '{}');
+      const id = Math.random().toString(36).slice(2,8);
+      store[id] = { original: orig, created: Date.now() };
+      localStorage.setItem(storeKey, JSON.stringify(store));
+      const pseudo = location.origin + location.pathname + '?l=' + id;
+      shortResult.value = pseudo;
+      alert('TinyURL not available — created local short link (device-only) 🔒');
+    });
+
+    document.getElementById('copyShortBtn').addEventListener('click', () => {
+      if(!shortResult.value) return alert('Nothing to copy');
+      navigator.clipboard.writeText(shortResult.value).then(() => alert('Copied ✅'));
+    });
+    document.getElementById('openShortBtn').addEventListener('click', () => {
+      if(!shortResult.value) return alert('No short URL');
+      window.open(shortResult.value, '_blank');
+    });
+    document.getElementById('clearShortBtn').addEventListener('click', () => shortResult.value = '');
+
+    // handle local redirect
+    (function(){
+      const params = new URLSearchParams(location.search);
+      const id = params.get('l');
+      if(id){
+        const store = JSON.parse(localStorage.getItem('utilityhub_local_links_prod') || '{}');
+        if(store[id]) location.href = store[id].original;
+        else alert('Short link not found on this device.');
+      }
+    })();
+
+    /* Image logic (preview, resize with target KB, clear) */
+    const imageFile = document.getElementById('imageFile');
+    const imgPreviewWrap = document.getElementById('imgPreviewWrap');
+    document.getElementById('previewBtn').addEventListener('click', () => {
+      const f = imageFile.files[0];
+      if(!f) return alert('Choose an image first');
+      const url = URL.createObjectURL(f);
+      imgPreviewWrap.innerHTML = `<img src="${url}" alt="preview" class="rounded-xl max-w-full border border-slate-700" />`;
+    });
+    document.getElementById('resizeBtn').addEventListener('click', resizeImage);
+    document.getElementById('clearImgBtn').addEventListener('click', clearImage);
+
+    async function resizeImage(){
+      const f = imageFile.files[0];
+      if(!f) return alert('Choose an image first');
+
+      const w = parseInt(document.getElementById('imgWidth').value) || null;
+      const h = parseInt(document.getElementById('imgHeight').value) || null;
+      const targetKb = parseInt(document.getElementById('targetKb').value) || null;
+
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        let tw = w || img.width;
+        let th = h || img.height;
+        if(w && !h) th = Math.round(img.height * (w / img.width));
+        if(h && !w) tw = Math.round(img.width * (h / img.height));
+        canvas.width = tw; canvas.height = th;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, tw, th);
+
+        if(!targetKb){
+          canvas.toBlob(blob => {
+            const a = document.createElement('a');
+            a.download = 'resized-' + f.name.replace(/\.[^/.]+$/, '') + '.jpg';
+            a.href = URL.createObjectURL(blob);
+            a.click();
+            URL.revokeObjectURL(a.href);
+          }, 'image/jpeg', 0.92);
+          return;
+        }
+
+        const targetBytes = targetKb * 1024;
+        let quality = 0.92;
+        const minQuality = 0.28;
+        let blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
+
+        // reduce quality first
+        while(blob.size > targetBytes && quality > minQuality){
+          quality = Math.max(minQuality, quality - 0.07);
+          blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
+        }
+
+        // downscale dimensions if still too large
+        let downscaleFactor = 0.9;
+        while(blob.size > targetBytes && (tw > 160 || th > 160)){
+          tw = Math.round(tw * downscaleFactor);
+          th = Math.round(th * downscaleFactor);
+          canvas.width = tw; canvas.height = th;
+          ctx.drawImage(img, 0, 0, tw, th);
+          quality = Math.max(minQuality, quality - 0.04);
+          blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
+          if(tw < 160 || th < 160) break;
+        }
+
+        // download final blob
+        const a = document.createElement('a');
+        a.download = 'resized-' + f.name.replace(/\.[^/.]+$/, '') + '.jpg';
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        URL.revokeObjectURL(a.href);
+      };
+
+      img.onerror = () => alert('Failed to read image file. Try another image.');
+      img.src = URL.createObjectURL(f);
+    }
+
+    function clearImage(){
+      imageFile.value = '';
+      imgPreviewWrap.innerHTML = '';
+      document.getElementById('imgWidth').value = '';
+      document.getElementById('imgHeight').value = '';
+      document.getElementById('targetKb').value = '';
+    }
+  </script>
+</body>
+</html>
